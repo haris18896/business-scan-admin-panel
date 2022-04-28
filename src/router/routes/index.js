@@ -45,6 +45,11 @@ const Routes = [
   },
 
   {
+    path: '/view-representative/:id',
+    component: lazy(() => import('../../views/representative/ViewRepresentative'))
+  },
+
+  {
     path: '/register-event',
     component: lazy(() => import('../../views/Event/RegisterEvent'))
   },

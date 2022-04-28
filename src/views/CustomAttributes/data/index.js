@@ -35,31 +35,33 @@ createTheme(
 export const columns = [
   {
     name: 'ID',
-    sortable: false,
     minWidth: '150px',
     cell: row => row._id
   },
   {
-    name: 'Parent',
+    name: 'Priority',
     sortable: false,
+    minWidth: '150px',
+    cell: row => row.priority
+  },
+  {
+    name: 'Parent',
     minWidth: '150px',
     cell: row => row.parent
   },
   {
     name: 'Category',
-    sortable: false,
     minWidth: '150px',
     cell: row => row.category
   },
   {
     name: 'Type',
-    sortable: false,
     minWidth: '150px',
     selector: row => row.type
   },
   {
     name: 'Created At',
-    sortable: false,
+    sortable: true,
     minWidth: '150px',
     // selector: row => row.date
     selector: row => new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'medium' }).format(new Date(row.createdAt))

@@ -1,8 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import DataTable from 'react-data-table-component'
-import { columns } from './data'
 
-import { ChevronDown, RefreshCw } from 'react-feather'
+import { RefreshCw } from 'react-feather'
 import ReactPaginate from 'react-paginate'
 import { Card, CardHeader, CardTitle, Col, Input, Label, Row } from 'reactstrap'
 import {
@@ -13,23 +11,18 @@ import {
 } from '../../redux/actions/customAttributes/fetchAttributesListAction'
 import { useDispatch, useSelector } from 'react-redux'
 import Spinner from '../common/Spinner'
+import CustomAttributesTabs from '../components/tabs/CustomAttributesTabs'
+import { PAGE_RESET } from '../../redux/actions/ActionTypes/customAttributes'
 
 function ListCustomAttributes() {
   const dispatch = useDispatch()
 
   const [parent, setParent] = useState('')
-  const [category, setCategory] = useState('')
+  const [category, setCategory] = useState('customerType')
   const [searchKeyword, setSearchKeyword] = useState('')
-  const {
-    attributesListInProcess,
-    attributesListData,
-    page,
-    limit,
-    totalPages,
-    totalRecords,
-    deleteInProcess,
-    isDeleted
-  } = useSelector(state => state.listCustomAttributes)
+  const { page, limit, totalPages, totalRecords, isDeleted } = useSelector(state => state.listCustomAttributes)
+
+  const [active, setActive] = useState(`${category}`)
 
   const onChangeHandler = e => {
     const { name, value } = e.target
@@ -54,6 +47,14 @@ function ListCustomAttributes() {
       dispatch(resetCustomAttributesListState())
     }
   }, [])
+
+  const toggleTab = tab => {
+    if (active !== tab) {
+      setActive(tab)
+    }
+    onChangeHandler({ target: { name: 'category', value: tab } })
+    dispatch({ type: PAGE_RESET })
+  }
 
   const CustomPagination = () => {
     return (
@@ -83,7 +84,6 @@ function ListCustomAttributes() {
   const resetFilters = () => {
     setSearchKeyword('')
     setParent('')
-    setCategory('')
   }
 
   return (
@@ -133,22 +133,6 @@ function ListCustomAttributes() {
             />
           </Col>
 
-
-          <Col sm={12} md={6} lg={4} className='mb-1'>
-            <div className='d-flex align-items-center'>
-              <Label style={{ marginRight: '10px' }} className='mr-1' for='category'>
-                Category
-              </Label>
-              <Input className='dataTable-select mr-1' type='select' id='category' name='category' value={category} onChange={onChangeHandler}>
-                <option value=''>Choose...</option>
-                <option value='customerType'>Customer Type</option>
-                <option value='businessType'>Business Type</option>
-                <option value='tags'>Tags</option>
-                <option value='priority'>Priority</option>
-              </Input>
-            </div>
-          </Col>
-
           <Col sm={12} md={6} lg={5} className='d-flex align-items-center justify-content-sm-end mb-1 mt-sm-0 mt-1'>
             <Label className='mr-1' style={{ marginRight: '15px' }} for='searchKeyword'>
               Search
@@ -172,26 +156,7 @@ function ListCustomAttributes() {
           </Col>
         </Row>
 
-        {attributesListInProcess || deleteInProcess ? (
-          <Spinner />
-        ) : attributesListData?.customAttributes.length ? (
-          <div className='react-dataTable'>
-            <DataTable
-              title='Attributes List'
-              columns={columns}
-              data={attributesListData?.customAttributes}
-              theme='solarized'
-              className='react-dataTable '
-              sortIcon={<ChevronDown size={10} />}
-              highlightOnHover
-              pointerOnHover
-            />
-          </div>
-        ) : (
-          <Card>
-            <CardHeader>No Record Found!</CardHeader>
-          </Card>
-        )}
+        <CustomAttributesTabs active={active} toggleTab={toggleTab} />
 
         <Row className='mx-0 justify-content-between'>
           <Col className='mt-1' sm='12' md={6}>

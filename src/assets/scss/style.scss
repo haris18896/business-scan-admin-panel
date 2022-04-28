@@ -111,3 +111,12 @@ input[type="date"]::-webkit-datetime-edit {
 .smallHeightInput {
 	height: 1.3rem !important;
 }
+
+
+.table thead th {
+	text-transform: capitalize;
+}
+
+.rdt_TableRow {
+	text-transform: capitalize;
+}

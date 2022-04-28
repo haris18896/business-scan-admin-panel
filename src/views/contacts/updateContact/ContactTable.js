@@ -46,8 +46,8 @@ function ContactTable() {
               <tr>
                 <th></th>
                 <th></th>
-                <th>firstName</th>
-                <th>surName</th>
+                <th>firstname</th>
+                <th>surname</th>
                 <th></th>
                 <th></th>
                 <th></th>

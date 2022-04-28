@@ -1,3 +1,4 @@
+/* eslint-disable implicit-arrow-linebreak */
 import {
   DELETE_CUSTOM_ATTRIBUTE_FAILURE,
   DELETE_CUSTOM_ATTRIBUTE_INITIATED,
@@ -6,6 +7,7 @@ import {
   LIST_CUSTOM_ATTRIBUTES_INITIATED,
   LIST_CUSTOM_ATTRIBUTES_SUCCESS,
   PAGE_CHANGE,
+  PAGE_RESET,
   RESET_LIST_CUSTOM_ATTRIBUTES,
   SELECT_CHANGE
 } from '../../actions/ActionTypes/customAttributes'
@@ -64,6 +66,10 @@ export const listCustomAttributesReducer = (state = initialState, action) => {
         deleteInProcess: false,
         isDeleted: false
       }
+
+    case PAGE_RESET: {
+      return { ...state, page: 1 }
+    }
 
     case RESET_LIST_CUSTOM_ATTRIBUTES:
       return initialState

@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import Spinner from '../common/Spinner'
 import themeConfig from '@configs/themeConfig'
 import InputPasswordToggle from '@components/input-password-toggle'
+import FormGroupField from '../components/FormGroupField'
 
 import { useFormik } from 'formik'
 import { isObjEmpty } from '@utils'
@@ -63,20 +64,17 @@ function Login() {
               Admin Login
             </CardTitle>
             <Form className='auth-login-form mt-2' onSubmit={formik.handleSubmit}>
-              <FormGroup>
-                <Label className='form-label' for='email'>
-                  Email
-                </Label>
-                <Input
-                  autoFocus
-                  type='email'
-                  id='email'
-                  name='email'
-                  placeholder='admin@example.com'
-                  {...formik.getFieldProps('email')}
-                  className={classNames({ 'is-invalid': formik.touched.email && formik.errors.email })}
-                />
-              </FormGroup>
+              <FormGroupField
+                labelClassName='form-label'
+                autoFocus
+                label='Email'
+                type='email'
+                inputName='email'
+                placeholder='admin@example.com'
+                formikTouched={formik.touched.email}
+                formikError={formik.errors.email}
+                {...formik.getFieldProps('email')}
+              />
 
               <FormGroup className='mb-2'>
                 <div className='d-flex justify-content-between'>

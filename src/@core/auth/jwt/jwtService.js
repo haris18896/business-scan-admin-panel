@@ -1,4 +1,5 @@
 import axios from 'axios'
+import moment from 'moment'
 import jwtDefaultConfig from './jwtDefaultConfig'
 
 export default class JwtService {
@@ -111,6 +112,7 @@ export default class JwtService {
       startDateFromFilter = new Date(startDateFromFilter).toISOString().split('T')[0]
       endpoint = `${endpoint}&startDateFrom=${startDateFromFilter}`
     }
+
     if (startDateToFilter) {
       startDateToFilter = new Date(startDateToFilter.setDate(startDateToFilter.getDate() + 1)).toISOString().split('T')[0]
       endpoint = `${endpoint}&startDateTo=${startDateToFilter}`
@@ -136,11 +138,24 @@ export default class JwtService {
     return axios.put(`${this.jwtConfig.updateContactEndPoint}${id}`, data)
   }
 
-  getContactList(page, limit, eventIdFilter, type, createdDateFromFilter, createdDateToFilter, searchKeyword = null) {
+  getContactList(
+    page,
+    limit,
+    eventIdFilter,
+    representativeFilter,
+    type,
+    createdDateFromFilter,
+    createdDateToFilter,
+    searchKeyword = null
+  ) {
     let endpoint = `${this.jwtConfig.getContactsListEndPoint}?page=${page}&limit=${limit}`
 
     if (eventIdFilter) {
       endpoint = `${endpoint}&eventId=${eventIdFilter}`
+    }
+
+    if (representativeFilter) {
+      endpoint = `${endpoint}&representativeId=${representativeFilter}`
     }
 
     if (type) {
@@ -164,11 +179,24 @@ export default class JwtService {
     return axios.get(endpoint)
   }
 
-  exportCsvContactList(page, limit, eventIdFilter, type, createdDateFromFilter, createdDateToFilter, searchKeyword = null) {
+  exportCsvContactList(
+    page,
+    limit,
+    eventIdFilter,
+    representativeFilter,
+    type,
+    createdDateFromFilter,
+    createdDateToFilter,
+    searchKeyword = null
+  ) {
     let endpoint = `${this.jwtConfig.exportCsvEndPoint}?page=${page}&limit=${limit}`
 
     if (eventIdFilter) {
       endpoint = `${endpoint}&eventId=${eventIdFilter}`
+    }
+
+    if (representativeFilter) {
+      endpoint = `${endpoint}&representativeId=${representativeFilter}`
     }
 
     if (type) {
@@ -188,8 +216,19 @@ export default class JwtService {
     if (searchKeyword) {
       endpoint = `${endpoint}&searchKeyword=${searchKeyword}`
     }
-
-    return axios.get(endpoint)
+    // to download csv directly as a blob
+    axios({
+      url: endpoint,
+      method: 'GET',
+      responseType: 'blob'
+    }).then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `contactList_${moment().format()}.csv`)
+      document.body.appendChild(link)
+      link.click()
+    })
   }
 
   addCustomAttributes(data) {

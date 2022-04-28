@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import * as Yup from 'yup'
-import classNames from 'classnames'
 import Spinner from '../common/Spinner'
 
 import { useFormik } from 'formik'
@@ -13,6 +12,7 @@ import {
   handleUpdateCustomAttributes,
   resetUpdateCustomAttributeState
 } from '../../redux/actions/customAttributes/updateAttributesListAction'
+import FormGroupField from '../components/FormGroupField'
 
 function UpdateCustomAttributes() {
   const dispatch = useDispatch()
@@ -41,7 +41,8 @@ function UpdateCustomAttributes() {
       ),
     type: Yup.string()
       .required('type is a required field!')
-      .matches(/^(selectOption|checkbox)$/, 'type must be one of the following: selectOption, checkbox')
+      .matches(/^(selectOption|checkbox)$/, 'type must be one of the following: selectOption, checkbox'),
+    priority: Yup.number().positive().required('priority is a required field!').min(1, 'priority must be greater than 0')
   })
 
   const formik = useFormik({
@@ -49,7 +50,8 @@ function UpdateCustomAttributes() {
       attributeId: attributeDataById?.customAttribute?._id || '',
       parent: attributeDataById?.customAttribute?.parent || '',
       category: attributeDataById?.customAttribute?.category || '',
-      type: attributeDataById?.customAttribute?.type || ''
+      type: attributeDataById?.customAttribute?.type || '',
+      priority: attributeDataById?.customAttribute?.priority || ''
     },
     validationSchema: updateCustomAttributesSchema,
     enableReinitialize: true,
@@ -59,7 +61,8 @@ function UpdateCustomAttributes() {
           attributeId: values.attributeId,
           parent: values.parent,
           category: values.category,
-          type: values.type
+          type: values.type,
+          priority: values.priority
         }
         dispatch(handleUpdateCustomAttributes(id, data))
       }
@@ -92,82 +95,75 @@ function UpdateCustomAttributes() {
           <Form onSubmit={formik.handleSubmit}>
             <Row>
               <Col sm={12} md={8} lg={6} className='mb-3 mb-md-0'>
-                <FormGroup>
-                  <Label className='form-label' htmlFor='attributeId'>
-                    Attribute ID
-                  </Label>
-                  <Input
-                    autoFocus
-                    type='text'
-                    disabled
-                    name='attributeId'
-                    id='attributeId'
-                    placeholder='Furniture Tech'
-                    className={classNames({ 'is-invalid': formik.touched.attributeId && formik.errors.attributeId })}
-                    {...formik.getFieldProps('attributeId')}
-                  />
-                  {formik.touched.attributeId && formik.errors.attributeId ? (
-                    <FormFeedback>{formik.errors.attributeId}</FormFeedback>
-                  ) : null}
-                </FormGroup>
+                <FormGroupField
+                  autoFocus
+                  labelClassName='form-label'
+                  label='Attribute ID'
+                  inputType='text'
+                  inputName='attributeId'
+                  placeholder='Furniture Tech'
+                  formikTouched={formik.touched.attributeId}
+                  formikError={formik.errors.attributeId}
+                  {...formik.getFieldProps('attributeId')}
+                />
               </Col>
 
               <Col sm={12} md={8} lg={6} className='mb-3 mb-md-0'>
-                <FormGroup>
-                  <Label className='form-label' htmlFor='parent'>
-                  Parent (for Tags only)
-                  </Label>
-                  <Input
-                    type='text'
-                    name='parent'
-                    id='parent'
-                    placeholder='e.g Valinge Flooring Products'
-                    className={classNames({ 'is-invalid': formik.touched.parent && formik.errors.parent })}
-                    {...formik.getFieldProps('parent')}
-                  />
-                  {formik.touched.parent && formik.errors.parent ? <FormFeedback>{formik.errors.parent}</FormFeedback> : null}
-                </FormGroup>
+                <FormGroupField
+                  labelClassName='form-label'
+                  label='Parent (for Tags only)'
+                  inputType='text'
+                  inputName='parent'
+                  placeholder='e.g Valinge Flooring Products'
+                  formikTouched={formik.touched.parent}
+                  formikError={formik.errors.parent}
+                  {...formik.getFieldProps('parent')}
+                />
               </Col>
 
               <Col sm={12} md={8} lg={6} className='mb-3 mb-md-0'>
-                <FormGroup>
-                  <Label className='form-label' htmlFor='parent'>
-                    Category
-                  </Label>
-                  <Input
-                    type='select'
-                    name='category'
-                    id='category'
-                    className={classNames({ 'is-invalid': formik.touched.category && formik.errors.category })}
-                    {...formik.getFieldProps('category')}
-                  >
-                    <option value=''>Select Category</option>
-                    <option value='customerType'>Customer Type</option>
-                    <option value='businessType'>Business Type</option>
-                    <option value='tags'>Tags</option>
-                    <option value='priority'>Priority</option>
-                  </Input>
-                  {formik.touched.category && formik.errors.category ? (
-                    <FormFeedback>{formik.errors.category}</FormFeedback>
-                  ) : null}
-                </FormGroup>
+                <FormGroupField
+                  labelClassName='form-label'
+                  label='Category'
+                  inputType='select'
+                  inputName='category'
+                  formikTouched={formik.touched.category}
+                  formikError={formik.errors.category}
+                  {...formik.getFieldProps('category')}
+                >
+                  <option value=''>Select Category</option>
+                  <option value='customerType'>Customer Type</option>
+                  <option value='businessType'>Business Type</option>
+                  <option value='tags'>Tags</option>
+                  <option value='priority'>Priority</option>
+                </FormGroupField>
               </Col>
 
               <Col sm={12} md={8} lg={6} className='mb-3 mb-md-0'>
-                <FormGroup>
-                  <Label className='form-label' htmlFor='type'>
-                    Type
-                  </Label>
-                  <Input
-                    type='text'
-                    name='type'
-                    id='type'
-                    placeholder={`selectOption, checkbox`}
-                    className={classNames({ 'is-invalid': formik.touched.type && formik.errors.type })}
-                    {...formik.getFieldProps('type')}
-                  />
-                  {formik.touched.type && formik.errors.type ? <FormFeedback>{formik.errors.type}</FormFeedback> : null}
-                </FormGroup>
+                <FormGroupField
+                  labelClassName='form-label'
+                  label='Type'
+                  inputType='text'
+                  inputName='type'
+                  placeholder={`selectOption, checkbox`}
+                  formikTouched={formik.touched.type}
+                  formikError={formik.errors.type}
+                  {...formik.getFieldProps('type')}
+                />
+              </Col>
+
+              <Col sm={12} md={3} className='mb-3 mb-md-0'>
+                <FormGroupField
+                  labelClassName='form-label'
+                  label='Priority'
+                  inputType='number'
+                  min={1}
+                  inputName='priority'
+                  placeholder='insert a number'
+                  formikTouched={formik.touched.priority}
+                  formikError={formik.errors.priority}
+                  {...formik.getFieldProps('priority')}
+                />
               </Col>
             </Row>
             {updateAttributesData?.success && <p className='text-success'>{updateAttributesData?.msg}</p>}

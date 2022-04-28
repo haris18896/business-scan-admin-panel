@@ -124,21 +124,21 @@ function ListRepresentative() {
           <Spinner />
         ) : representativeListData && representativeListData?.representatives.length > 0 ? (
           <Table responsive>
-            <thead>
+            <thead style={{ textAlign: 'center' }}>
               <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-                <th>Actions</th>
+                <th>id</th>
+                <th>name</th>
+                <th>email</th>
+                <th>created at</th>
+                <th>updated at</th>
+                <th>actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody style={{ textAlign: 'center' }}>
               {representativeListData?.representatives.map((representative, index) => (
                 <tr key={index}>
                   <td>{representative._id}</td>
-                  <td>{representative.name}</td>
+                  <td style={{ textTransform: 'capitalize' }}>{representative.name}</td>
                   <td>{representative.email}</td>
                   <td>{formatDate(representative.createdAt)}</td>
                   <td>{formatDate(representative.updatedAt)}</td>

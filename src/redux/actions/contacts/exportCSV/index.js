@@ -11,7 +11,16 @@ export const exportCSVInitiated = () => ({ type: EXPORT_CSV_CONTACTS_INITIATED }
 export const exportCSVSuccess = data => ({ type: EXPORT_CSV_CONTACTS_SUCCESS, payload: data })
 export const exportCSVFailEd = data => ({ type: EXPORT_CSV_CONTACTS_FAILED, payload: data })
 
-export const handleExportCSV = (page, limit, eventIdFilter, type, createdDateFromFilter, createdDateToFilter, searchKeyword) => {
+export const handleExportCSV = (
+  page,
+  limit,
+  eventIdFilter,
+  representativeFilter,
+  type,
+  createdDateFromFilter,
+  createdDateToFilter,
+  searchKeyword
+) => {
   return async dispatch => {
     try {
       dispatch(exportCSVInitiated())
@@ -19,6 +28,7 @@ export const handleExportCSV = (page, limit, eventIdFilter, type, createdDateFro
         page,
         limit,
         eventIdFilter,
+        representativeFilter,
         type,
         createdDateFromFilter,
         createdDateToFilter,

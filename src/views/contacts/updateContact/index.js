@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable multiline-ternary */
 import React, { Fragment, useEffect, useLayoutEffect } from 'react'
 import * as Yup from 'yup'
@@ -47,6 +48,11 @@ function UpdateContact() {
       middleName: Yup.string().max(30, 'Middle Name must not exceed 30 characters'),
       surName: Yup.string().min(2, 'surName must contain at least 2 characters').max(30, 'surName must not exceed 30 characters')
     }),
+    event: Yup.object().shape({
+      _id: Yup.string(),
+      name: Yup.string(),
+      organizedBy: Yup.string()
+    }),
     job: Yup.string().max(40, 'job must not exceed 40 characters'),
     company: Yup.string().max(40, 'company must not exceed 40 characters'),
     website: Yup.string().max(40, 'website must not exceed 40 characters'),
@@ -80,8 +86,7 @@ function UpdateContact() {
         question: Yup.string().max(150, 'question must not exceed 150 characters'),
         answer: Yup.string().max(150, 'Answer must not exceed 150 characters')
       })
-    ),
-    addedBy: Yup.string()
+    )
   })
 
   const formik = useFormik({
@@ -90,6 +95,11 @@ function UpdateContact() {
         firstName: contactProfile?.contact?.name?.firstName || '',
         middleName: contactProfile?.contact?.name?.middleName || '',
         surName: contactProfile?.contact?.name?.surName || ''
+      },
+      event: {
+        _id: contactProfile?.contact?.event?._id || '',
+        name: contactProfile?.contact?.event?.name || '',
+        organizedBy: contactProfile?.contact?.event?.organizedBy || ''
       },
       job: contactProfile?.contact?.job || '',
       company: contactProfile?.contact?.company || '',
@@ -109,8 +119,7 @@ function UpdateContact() {
       customAttributes: contactProfile?.contact?.customAttributes || [],
       tags: contactProfile?.contact?.tags ? contactProfile?.contact?.tags.join(',') : [],
       notes: contactProfile?.contact?.notes || '',
-      questionnaire: contactProfile?.contact?.questionnaire || '',
-      addedBy: contactProfile?.contact?.addedBy || ''
+      questionnaire: contactProfile?.contact?.questionnaire || ''
     },
     enableReinitialize: true,
     validationSchema: updateContactSchema,
@@ -140,8 +149,7 @@ function UpdateContact() {
           extraAttributes: values.extraAttributes,
           tags: values.tags.split(','),
           notes: values.notes,
-          questionnaire: values.questionnaire,
-          addedBy: values.addedBy
+          questionnaire: values.questionnaire
         }
         dispatch(handleUpdateContact(id, data))
       }
@@ -266,6 +274,13 @@ function UpdateContact() {
                     formikError={formik.errors.phone}
                     {...formik.getFieldProps('phone')}
                   />
+
+                  <FormGroup className='d-flex justify-content-start flex-column'>
+                    <Label for='customerType' className='mr-2 form-label'>
+                      Event
+                    </Label>
+                    <Label style={{ fontSize: '14px' }}>{formik.values.event?.name}</Label>
+                  </FormGroup>
                 </Col>
 
                 <Col sm={12} md={8} lg={6} className='mb-1 mb-md-0'>
@@ -317,11 +332,11 @@ function UpdateContact() {
                     labelClassName='form-label'
                     label='Country'
                     inputType='text'
-                    inputName='address.Country'
-                    placeholder={contactProfile?.contact?.address?.Country}
-                    formikTouched={formik.touched.address?.Country}
-                    formikError={formik.errors.address?.Country}
-                    {...formik.getFieldProps('address.Country')}
+                    inputName='address.country'
+                    placeholder={contactProfile?.contact?.address?.country}
+                    formikTouched={formik.touched.address?.country}
+                    formikError={formik.errors.address?.country}
+                    {...formik.getFieldProps('address.country')}
                   />
 
                   <FormGroupField
@@ -356,6 +371,18 @@ function UpdateContact() {
                     formikError={formik.errors.notes}
                     {...formik.getFieldProps('notes')}
                   />
+
+                  <FormGroup className='d-flex justify-content-start flex-column'>
+                    <Label for='customerType' className='mr-2 form-label'>
+                      Representative
+                    </Label>
+                    {(contactProfile?.contact?.representative && (
+                      <a target='__blank' href={`/view-representative/${contactProfile?.contact?.representative?._id}`}>
+                        {contactProfile?.contact?.representative?.name}
+                      </a>
+                    )) ||
+                      'N/A'}
+                  </FormGroup>
                 </Col>
               </Row>
 
@@ -373,90 +400,102 @@ function UpdateContact() {
               )}
 
               <CardTitle className={currentSkin === 'light' ? 'text-primary' : 'text-secondary'}>Custom Attributes</CardTitle>
-              <FormGroup className='d-flex justify-content-start'>
-                {attributesListData?.customAttributes
-                  .filter(attribute => attribute.category.includes('customerType'))
-                  .map((customerType, index) => (
-                    <div key={index} className='custom-control custom-checkbox me-2'>
-                      <Input
-                        type='checkbox'
-                        name={customerType._id}
-                        id={customerType._id}
-                        defaultChecked={
-                          contactProfile?.contact?.customerType
-                            ? contactProfile?.contact?.customerType.includes(customerType._id)
-                            : formik.values?.customerType
-                            ? formik.values?.customerType.includes(customerType._id)
-                            : ''
-                        }
-                        value={customerType._id}
-                        onChange={e => {
-                          formik.setFieldValue(
-                            'customerType',
-                            e.target.checked
-                              ? [...formik.values.customerType, customerType._id]
-                              : formik.values.customerType.filter(item => item !== customerType._id)
-                          )
-                        }}
-                        className={classNames({
-                          'is-invalid': formik.touched.customerType && formik.errors.customerType?.[index]?.customerType
-                        })}
-                      />
-                      <Label className='custom-control-label' style={{ marginLeft: '10px' }} htmlFor={customerType._id}>
-                        {customerType._id}
-                      </Label>
-                    </div>
-                  ))}
-              </FormGroup>
+              <div>
+                <Label for='customerType' className='mr-2 form-label' style={{ marginRight: '15px' }}>
+                  Customer Type
+                </Label>
+                <FormGroup className='d-flex justify-content-start'>
+                  {attributesListData?.customAttributes
+                    .filter(attribute => attribute.category.includes('customerType'))
+                    .map((customerType, index) => (
+                      <div key={index} className='custom-control custom-checkbox me-2'>
+                        <Input
+                          type='checkbox'
+                          name={customerType._id}
+                          id={customerType._id}
+                          defaultChecked={
+                            contactProfile?.contact?.customerType
+                              ? contactProfile?.contact?.customerType.includes(customerType._id)
+                              : formik.values?.customerType
+                              ? formik.values?.customerType.includes(customerType._id)
+                              : ''
+                          }
+                          value={customerType._id}
+                          onChange={e => {
+                            formik.setFieldValue(
+                              'customerType',
+                              e.target.checked
+                                ? [...formik.values.customerType, customerType._id]
+                                : formik.values.customerType.filter(item => item !== customerType._id)
+                            )
+                          }}
+                          className={classNames({
+                            'is-invalid': formik.touched.customerType && formik.errors.customerType?.[index]?.customerType
+                          })}
+                        />
+                        <Label className='custom-control-label' style={{ marginLeft: '10px' }} htmlFor={customerType._id}>
+                          {customerType._id}
+                        </Label>
+                      </div>
+                    ))}
+                </FormGroup>
+              </div>
 
-              <FormGroup className='d-flex justify-content-start'>
-                {attributesListData?.customAttributes
-                  .filter(attribute => attribute?.category.includes('businessType'))
-                  .map((businessType, index) => (
-                    <div key={index} className='custom-control custom-checkbox me-2'>
-                      <Input
-                        type='checkbox'
-                        name={businessType._id}
-                        id={businessType._id}
-                        defaultChecked={
-                          contactProfile?.contact?.customAttributes
-                            ? contactProfile?.contact?.customAttributes.map(item => item?.businessType).includes(businessType._id)
-                            : formik.values?.customAttributes
-                            ? formik.values?.customAttributes.map(item => item?.businessType).includes(businessType._id)
-                            : ''
-                        }
-                        value={businessType._id}
-                        onChange={e => {
-                          formik.setFieldValue(
-                            'customAttributes',
-                            e.target.checked
-                              ? [
-                                  ...formik.values?.customAttributes,
-                                  { businessType: businessType._id, tags: [], description: '', priority: '', responsible: '' }
-                                ]
-                              : formik.values?.customAttributes.filter(item => item.businessType !== businessType._id)
-                          )
-                        }}
-                        className={classNames({
-                          'is-invalid': formik.touched.customAttributes && formik.errors.customAttributes?.[index]?.businessType
-                        })}
-                      />
-                      <Label className='custom-control-label' style={{ marginLeft: '10px' }} htmlFor={businessType._id}>
-                        {businessType._id}
-                      </Label>
-                    </div>
-                  ))}
-              </FormGroup>
+              <div>
+                <Label for='customerType' className='mr-2 form-label' style={{ marginRight: '15px' }}>
+                  Business Type
+                </Label>
+                <FormGroup className='d-flex justify-content-start'>
+                  {attributesListData?.customAttributes
+                    .filter(attribute => attribute?.category.includes('businessType'))
+                    .map((businessType, index) => (
+                      <div key={index} className='custom-control custom-checkbox me-2'>
+                        <Input
+                          type='checkbox'
+                          name={businessType._id}
+                          id={businessType._id}
+                          defaultChecked={
+                            contactProfile?.contact?.customAttributes
+                              ? contactProfile?.contact?.customAttributes
+                                  .map(item => item?.businessType)
+                                  .includes(businessType._id)
+                              : formik.values?.customAttributes
+                              ? formik.values?.customAttributes.map(item => item?.businessType).includes(businessType._id)
+                              : ''
+                          }
+                          value={businessType._id}
+                          onChange={e => {
+                            formik.setFieldValue(
+                              'customAttributes',
+                              e.target.checked
+                                ? [
+                                    ...formik.values?.customAttributes,
+                                    { businessType: businessType._id, tags: [], description: '', priority: '', responsible: '' }
+                                  ]
+                                : formik.values?.customAttributes.filter(item => item.businessType !== businessType._id)
+                            )
+                          }}
+                          className={classNames({
+                            'is-invalid': formik.touched.customAttributes && formik.errors.customAttributes?.[index]?.businessType
+                          })}
+                        />
+                        <Label className='custom-control-label' style={{ marginLeft: '10px' }} htmlFor={businessType._id}>
+                          {businessType._id}
+                        </Label>
+                      </div>
+                    ))}
+                </FormGroup>
+              </div>
 
               {formik.values?.customAttributes.map((item, index) => (
                 <div key={index} className='d-flex justify-content-start flex-column p-1 border  rounded mt-2'>
                   <Label className='form-label' style={{ fontSize: '16px' }}>
                     Input about {item?.businessType}
                   </Label>
-                  <Label for='customerType' className='form-label' style={{ fontSize: '16px', marginBottom: '10px' }}>
-                    Tags:
+                  <Label for='customerType' className='mr-2 form-label' style={{ marginRight: '15px' }}>
+                    Tags
                   </Label>
-                  <FormGroup className='d-flex justify-content-start'>
+                  <FormGroup className='d-flex justify-content-start '>
                     {attributesListData?.customAttributes
                       .filter(attribute => attribute.category === 'tags' && attribute.parent === item?.businessType)
                       .map((tags, i) => (

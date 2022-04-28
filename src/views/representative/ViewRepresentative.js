@@ -5,22 +5,14 @@ import FormGroupField from '../components/FormGroupField'
 
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { isObjEmpty } from '@utils'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormFeedback, FormGroup, Input, Label, Row } from 'reactstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, useParams } from 'react-router-dom'
-import {
-  handleFetchRepresentative,
-  handleUpdateRepresentative,
-  resetUpdateRepresentativeState
-} from '../../redux/actions/representative/updateRrepresentative'
+import { useParams } from 'react-router-dom'
+import { handleFetchRepresentative } from '../../redux/actions/representative/updateRrepresentative'
 
 function UpdateRepresentative() {
   const dispatch = useDispatch()
-  const history = useHistory()
 
-  const { currentSkin } = useSelector(state => state.skin)
-  const { updateRepresentativeInProcess, updateRepresentativeProfile, error } = useSelector(state => state.updateRepresentative)
   const { isFetching, representativeProfile } = useSelector(state => state.getRepresentative)
 
   const { id } = useParams()
@@ -44,43 +36,20 @@ function UpdateRepresentative() {
       email: representativeProfile?.email || ''
     },
     enableReinitialize: true,
-    validationSchema: updateRepresentativeSchema,
-    onSubmit: values => {
-      if (isObjEmpty(formik.errors)) {
-        const { name, email } = values
-        const data = {
-          name,
-          email: email.trim()
-        }
-        dispatch(handleUpdateRepresentative(id, data))
-      }
-    }
+    validationSchema: updateRepresentativeSchema
   })
 
   useEffect(() => {
     dispatch(handleFetchRepresentative(id))
   }, [])
 
-  useEffect(() => {
-    if (updateRepresentativeProfile?.success) {
-      formik.resetForm()
-      history.push('/list-representative')
-    }
-  }, [updateRepresentativeProfile?.success])
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetUpdateRepresentativeState())
-    }
-  }, [])
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag='h4'>Update Representative</CardTitle>
+        <CardTitle tag='h4'>View Representative</CardTitle>
       </CardHeader>
 
-      {isFetching || updateRepresentativeInProcess ? (
+      {isFetching ? (
         <Spinner />
       ) : (
         <CardBody>
@@ -89,6 +58,7 @@ function UpdateRepresentative() {
               <Col sm={12} md={8} lg={6} className='mb-3 mb-md-0'>
                 <FormGroupField
                   label='Name'
+                  disabled
                   labelClassName='form-label'
                   type='text'
                   inputName='name'
@@ -100,6 +70,7 @@ function UpdateRepresentative() {
 
                 <FormGroupField
                   label='Email'
+                  disabled
                   labelClassName='form-label'
                   type='email'
                   inputName='email'
@@ -108,19 +79,6 @@ function UpdateRepresentative() {
                   formikTouched={formik.touched.email}
                   formikError={formik.errors.email}
                 />
-
-                {updateRepresentativeProfile?.success && (
-                  <p className='text-success'>Representative has been successfully updated!</p>
-                )}
-                {error && (
-                  <p className='text-danger'>
-                    {error.errors && error.errors.length ? `${error.errors[0].param} ${error.errors[0].msg}` : errs.msg}
-                  </p>
-                )}
-
-                <Button.Ripple className='mr-1' color={currentSkin === 'light' ? 'primary' : 'secondary'} type='submit'>
-                  Update representative
-                </Button.Ripple>
               </Col>
             </Row>
           </Form>

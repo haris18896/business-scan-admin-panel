@@ -180,26 +180,30 @@ function ListEvents() {
           <Spinner />
         ) : eventListData?.events ? (
           <Table responsive>
-            <thead>
+            <thead style={{ textAlign: 'center' }}>
               <tr>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Venue</th>
-                <th>ORGANIZED BY</th>
-                <th>QUESTIONS</th>
-                <th>STARTED AT</th>
-                <th>END AT</th>
-                <th>ACTIONS</th>
+                <th>Organized by</th>
+                <th>questions</th>
+                <th>started at</th>
+                <th>end at</th>
+                <th>actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody style={{ textAlign: 'center' }}>
               {eventListData?.events.map((event, index) => (
                 <tr key={index}>
                   <td>{event._id}</td>
                   <td>{event.name}</td>
                   <td>{event.venue}</td>
                   <td>{event.organizedBy}</td>
-                  <td>{event.questions}</td>
+                  <td>
+                    {event?.questions.map((question, i) => (
+                      <div key={i}>{question}</div>
+                    ))}
+                  </td>
                   <td>{formatDate(event.startDate)}</td>
                   <td>{formatDate(event.endDate)}</td>
                   <td>

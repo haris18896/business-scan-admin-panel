@@ -20,6 +20,7 @@ export const handleFetchContactList = (
   page,
   limit,
   eventIdFilter,
+  representativeFilter,
   type,
   createdDateFromFilter,
   createdDateToFilter,
@@ -32,6 +33,7 @@ export const handleFetchContactList = (
         page,
         limit,
         eventIdFilter,
+        representativeFilter,
         type,
         createdDateFromFilter,
         createdDateToFilter,
@@ -52,6 +54,7 @@ export const handlePageChange = (
   page,
   limit,
   eventIdFilter,
+  representativeFilter,
   type,
   createdDateFromFilter,
   createdDateToFilter,
@@ -61,7 +64,16 @@ export const handlePageChange = (
     const newPage = page.selected + 1
     dispatch(pageChange(newPage))
     dispatch(
-      handleFetchContactList(newPage, limit, eventIdFilter, type, createdDateFromFilter, createdDateToFilter, searchKeyword)
+      handleFetchContactList(
+        newPage,
+        limit,
+        eventIdFilter,
+        representativeFilter,
+        type,
+        createdDateFromFilter,
+        createdDateToFilter,
+        searchKeyword
+      )
     )
   }
 }
@@ -70,6 +82,7 @@ export const handleSelectChange = (
   newLimit,
   oldLimit,
   eventIdFilter,
+  representativeFilter,
   type,
   createdDateFromFilter,
   createdDateToFilter,
@@ -80,7 +93,16 @@ export const handleSelectChange = (
       dispatch(selectChange(newLimit))
       dispatch(pageChange(1))
       dispatch(
-        handleFetchContactList(1, newLimit, eventIdFilter, type, createdDateFromFilter, createdDateToFilter, searchKeyword)
+        handleFetchContactList(
+          1,
+          newLimit,
+          eventIdFilter,
+          representativeFilter,
+          type,
+          createdDateFromFilter,
+          createdDateToFilter,
+          searchKeyword
+        )
       )
     }
   }

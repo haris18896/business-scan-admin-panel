@@ -1,19 +1,20 @@
+/* eslint-disable */
 import React, { useEffect } from 'react'
 import '@styles/base/pages/authentication.scss'
 
 import * as Yup from 'yup'
 import validator from 'validator'
-import classNames from 'classnames'
 import Spinner from '../../common/Spinner'
 import themeConfig from '@configs/themeConfig'
 
 import { useFormik } from 'formik'
 import { isObjEmpty } from '@utils'
-import { Link, useHistory } from 'react-router-dom'
 import { useSkin } from '@hooks/useSkin'
+import { Link, useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Card, CardBody, CardTitle, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import { handleFetchProfile, handleUpdateProfile, resetState } from '../../../redux/actions/admin/profile'
+import FormGroupField from '../../components/FormGroupField'
 
 function UpdateProfile() {
   const skin = useSkin()
@@ -44,10 +45,9 @@ function UpdateProfile() {
     validationSchema: updateProfileSchema,
     onSubmit: values => {
       if (isObjEmpty(formik.errors)) {
-        const { name, email } = values
         const data = {
-          name,
-          email
+          name: values.name,
+          email: values.email.trim()
         }
         dispatch(handleUpdateProfile(data))
       }
@@ -96,36 +96,29 @@ function UpdateProfile() {
               Update Your Profile
             </CardTitle>
             <Form className='auth-login-form mt-2' onSubmit={formik.handleSubmit}>
-              <FormGroup>
-                <Label className='form-label' htmlFor='name'>
-                  Name
-                </Label>
-                <Input
-                  autoFocus
-                  type='text'
-                  name='name'
-                  id='name'
-                  placeholder='Abdullah'
-                  className={classNames({ 'is-invalid': formik.touched.name && formik.errors.name })}
-                  {...formik.getFieldProps('name')}
-                />
-                {formik.touched.name && formik.errors.name ? <FormFeedback>{formik.errors.name}</FormFeedback> : null}
-              </FormGroup>
+              <FormGroupField
+                autoFocus={true}
+                label='Name'
+                labelClassName='form-label'
+                type='text'
+                inputName='name'
+                placeholder='Enter your name'
+                {...formik.getFieldProps('name')}
+                formikTouched={formik.touched.name}
+                formikError={formik.errors.name}
+              />
 
-              <FormGroup>
-                <Label className='form-label' htmlFor='email'>
-                  Email
-                </Label>
-                <Input
-                  type='email'
-                  name='email'
-                  id='email'
-                  placeholder='abdullah@example.com'
-                  className={classNames({ 'is-invalid': formik.touched.email && formik.errors.email })}
-                  {...formik.getFieldProps('email')}
-                />
-                {formik.touched.email && formik.errors.email ? <FormFeedback>{formik.errors.email}</FormFeedback> : null}
-              </FormGroup>
+              <FormGroupField
+                labelClassName='form-label'
+                autoFocus
+                label='Email'
+                type='email'
+                inputName='email'
+                placeholder='youremail@example.com'
+                formikTouched={formik.touched.email}
+                formikError={formik.errors.email}
+                {...formik.getFieldProps('email')}
+              />
 
               {success && <p className='text-success'>Profile has been successfully updated!</p>}
               {error && <p className='text-danger'>{error.errors?.length ? error.errors[0].msg : error.msg}</p>}

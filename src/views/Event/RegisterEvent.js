@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import * as Yup from 'yup'
 import validator from 'validator'
-import classNames from 'classnames'
 import Spinner from '../common/Spinner'
+import FormGroupField from '../components/FormGroupField'
 
 import { useFormik } from 'formik'
 import { isObjEmpty } from '@utils'
@@ -100,121 +100,87 @@ function RegisterEvent() {
           <Form onSubmit={formik.handleSubmit}>
             <Row>
               <Col sm={12} md={8} lg={6} className='mb-3 mb-md-0'>
-                <FormGroup>
-                  <Label className='form-label' htmlFor='eventId'>
-                    EventId (optional)
-                  </Label>
-                  <Input
-                    autoFocus
-                    type='text'
-                    name='eventId'
-                    id='eventId'
-                    placeholder='1234e56a'
-                    className={classNames({ 'is-invalid': formik.touched.eventId && formik.errors.eventId })}
-                    {...formik.getFieldProps('eventId')}
-                  />
-                  {formik.touched.eventId && formik.errors.eventId ? <FormFeedback>{formik.errors.eventId}</FormFeedback> : null}
-                </FormGroup>
+                <FormGroupField
+                  autoFocus={true}
+                  label='Event id (optional)'
+                  labelClassName='form-label'
+                  type='text'
+                  inputName='eventId'
+                  placeholder='1234e56a'
+                  {...formik.getFieldProps('eventId')}
+                  formikTouched={formik.touched.eventId}
+                  formikError={formik.errors.eventId}
+                />
 
-                <FormGroup>
-                  <Label className='form-label' htmlFor='name'>
-                    Name
-                  </Label>
-                  <Input
-                    type='text'
-                    name='name'
-                    id='name'
-                    placeholder='Master Expo'
-                    className={classNames({ 'is-invalid': formik.touched.name && formik.errors.name })}
-                    {...formik.getFieldProps('name')}
-                  />
-                  {formik.touched.name && formik.errors.name ? <FormFeedback>{formik.errors.name}</FormFeedback> : null}
-                </FormGroup>
+                <FormGroupField
+                  label='Name'
+                  labelClassName='form-label'
+                  type='text'
+                  inputName='name'
+                  placeholder='Master Expo'
+                  {...formik.getFieldProps('name')}
+                  formikTouched={formik.touched.name}
+                  formikError={formik.errors.name}
+                />
 
-                <FormGroup>
-                  <Label className='form-label' htmlFor='venue'>
-                    Venue
-                  </Label>
-                  <Input
-                    type='textarea'
-                    name='venue'
-                    id='venue'
-                    placeholder='Down Street, London, UK'
-                    className={classNames({ 'is-invalid': formik.touched.venue && formik.errors.venue })}
-                    {...formik.getFieldProps('venue')}
-                  />
-                  {formik.touched.venue && formik.errors.venue ? <FormFeedback>{formik.errors.venue}</FormFeedback> : null}
-                </FormGroup>
+                <FormGroupField
+                  label='Venue'
+                  labelClassName='form-label'
+                  type='textarea'
+                  inputName='venue'
+                  placeholder='Down Street, London, UK'
+                  {...formik.getFieldProps('venue')}
+                  formikTouched={formik.touched.venue}
+                  formikError={formik.errors.venue}
+                />
               </Col>
 
               <Col sm={12} md={8} lg={6} className='mb-3 mb-md-0'>
-                <FormGroup>
-                  <Label className='form-label' htmlFor='organizedBy'>
-                    Organized By (optional)
-                  </Label>
-                  <Input
-                    type='text'
-                    name='organizedBy'
-                    id='organizedBy'
-                    placeholder='Techoices'
-                    className={classNames({ 'is-invalid': formik.touched.organizedBy && formik.errors.organizedBy })}
-                    {...formik.getFieldProps('organizedBy')}
-                  />
-                  {formik.touched.organizedBy && formik.errors.organizedBy ? (
-                    <FormFeedback>{formik.errors.organizedBy}</FormFeedback>
-                  ) : null}
-                </FormGroup>
+                <FormGroupField
+                  label='Organized by (optional)'
+                  labelClassName='form-label'
+                  type='text'
+                  inputName='organizedBy'
+                  placeholder='Techoices'
+                  {...formik.getFieldProps('organizedBy')}
+                  formikTouched={formik.touched.organizedBy}
+                  formikError={formik.errors.organizedBy}
+                />
 
-                <FormGroup>
-                  <Label className='form-label' htmlFor='startDate'>
-                    Start Date (optional)
-                  </Label>
-                  <Input
-                    type='date'
-                    name='startDate'
-                    id='startDate'
-                    placeholder='2022-03-11'
-                    className={classNames({ 'is-invalid': formik.touched.startDate && formik.errors.startDate })}
-                    {...formik.getFieldProps('startDate')}
-                  />
-                  {formik.touched.startDate && formik.errors.startDate ? (
-                    <FormFeedback>{formik.errors.startDate}</FormFeedback>
-                  ) : null}
-                </FormGroup>
+                <FormGroupField
+                  label='Start date (optional)'
+                  labelClassName='form-label'
+                  type='date'
+                  inputName='startDate'
+                  placeholder='2022-03-11'
+                  {...formik.getFieldProps('startDate')}
+                  formikTouched={formik.touched.startDate}
+                  formikError={formik.errors.startDate}
+                />
 
-                <FormGroup>
-                  <Label className='form-label' htmlFor='endDate'>
-                    End Date (optional)
-                  </Label>
-                  <Input
-                    type='date'
-                    name='endDate'
-                    id='endDate'
-                    placeholder='2022-03-11'
-                    className={classNames({ 'is-invalid': formik.touched.endDate && formik.errors.endDate })}
-                    {...formik.getFieldProps('endDate')}
-                  />
-                  {formik.touched.endDate && formik.errors.endDate ? <FormFeedback>{formik.errors.endDate}</FormFeedback> : null}
-                </FormGroup>
+                <FormGroupField
+                  label='End date (optional)'
+                  labelClassName='form-label'
+                  type='date'
+                  inputName='endDate'
+                  placeholder='2022-03-11'
+                  {...formik.getFieldProps('endDate')}
+                  formikTouched={formik.touched.endDate}
+                  formikError={formik.errors.endDate}
+                />
               </Col>
 
-              <FormGroup>
-                <Label className='form-label' htmlFor='questions'>
-                  Questions (note: one question per line)
-                </Label>
-                <Input
-                  type='textarea'
-                  name='questions'
-                  id='questions'
-                  style={{ height: '150px' }}
-                  placeholder={`How long you have been part of company?\nHow many people are you working with?`}
-                  className={classNames({ 'is-invalid': formik.touched.questions && formik.errors.questions })}
-                  {...formik.getFieldProps('questions')}
-                />
-                {formik.touched.questions && formik.errors.questions ? (
-                  <FormFeedback>{formik.errors.questions}</FormFeedback>
-                ) : null}
-              </FormGroup>
+              <FormGroupField
+                label='Questions (note: one question per line)'
+                labelClassName='form-label'
+                type='textarea'
+                style={{ height: '150px' }}
+                inputName='questions'
+                placeholder={`How long you have been part of company?\nHow many people are you working with?`}
+                {...formik.getFieldProps('questions')}
+                formikTouched={formik.touched.questions}
+                formikError={formik.errors.questions}
+              />
             </Row>
             {registerEvent?.success && <p className='text-success'>{registerEvent?.msg}</p>}
             {error && (
